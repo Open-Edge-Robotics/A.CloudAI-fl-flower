@@ -132,3 +132,27 @@ python src/flower_study/predict_test.py
 # 로컬에 미리 제작해둔 커스텀 데이터셋 필요
 python src/flower_study/predict_test_custom_dataset.py
 ```
+
+---
+
+## Related Project
+
+```
+https://github.com/Open-Edge-Robotics/A.EdgeAI-fl-perception
+To deploy Perception engine,  which is model resulted from Federated Learning 
+
+https://github.com/Open-Edge-Robotics/A.RobotAI-ros2-streamer
+To make and send stream of ROS 2 images captured from carmera attached to Robot.
+
+https://github.com/Open-Edge-Robotics/A.EdgeAI-rosbag-reader
+Reader function to extract the data (including images) from rosbag of ROS2
+
+https://github.com/Open-Edge-Robotics/A.CloudAI-fl-flower
+Flower Framework, which is Federated Learning to be used as Distributed Collaborative Learing Framework
+
+https://github.com/Open-Edge-Robotics/A.CloudAI-kube-multi-ctl
+Customized kubectl to manage multiple k8s master node (standalone node)
+
+https://github.com/Open-Edge-Robotics/A.RobotAI-kube-crd  (ebme-crd)
+Kubernetes custom resource definition to deploy the specific robot engines and applications
+```

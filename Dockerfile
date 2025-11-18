@@ -1,13 +1,10 @@
-FROM python:3.12
+FROM python:3.10-bullseye
 
 WORKDIR /ws
 
 COPY . .
 
-RUN pip install --upgrade pip && pip install -r requirements.txt
+RUN pip install -r requirements.txt
+RUN apt update && apt install -y net-tools neovim libgl1-mesa-glx
 
-WORKDIR /ws/src
-
-EXPOSE 8080
-
-CMD [ "tail", "-f", "/dev/null" ]
+CMD [ "/bin/bash", "-c", "tail -f /dev/null" ]

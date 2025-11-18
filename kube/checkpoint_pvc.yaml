@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: fl-checkpoints-pvc
+  namespace: lge-ebme
+spec:
+  storageClassName: local-path
+  accessModes:
+    - ReadWriteOnce
+  volumeMode: Filesystem
+  volumeName: fl-checkpoints-pv
+  resources:
+    requests:
+      storage: 2Gi

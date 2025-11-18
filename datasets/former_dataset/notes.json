@@ -1,0 +1,17 @@
+{
+  "categories": [
+    {
+      "id": 80,
+      "name": "fire extinguisher"
+    },
+    {
+      "id": 81,
+      "name": "trash can"
+    }
+  ],
+  "info": {
+    "year": 2025,
+    "version": "1.0",
+    "contributor": "Label Studio"
+  }
+}

@@ -1,13 +1,12 @@
-*.pt
 runs/
-.python-version
-*.npz
-src/flower_obj/data/PennFudanPed/
-PennFudanPed.zip
-*.pth
+*.pt
+*.cache
+checkpoints/
+flower-yolo-train/
+flower-yolo-val/
 
-# Created by https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,linux,windows,macos
-# Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode,linux,windows,macos
+# Created by https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,linux,macos,windows
+# Edit at https://www.toptal.com/developers/gitignore?templates=python,visualstudiocode,linux,macos,windows
 
 ### Linux ###
 *~
@@ -274,4 +273,4 @@ $RECYCLE.BIN/
 # Windows shortcuts
 *.lnk
 
-# End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,linux,windows,macos
+# End of https://www.toptal.com/developers/gitignore/api/python,visualstudiocode,linux,macos,windows

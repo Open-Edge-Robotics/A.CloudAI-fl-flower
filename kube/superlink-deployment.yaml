@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fl-superlink-deployment
+  namespace: lge-ebme
+  labels:
+    app: fl-superlink
+  annotations:
+    kubernetes.io/change-cause: "Init deployment"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fl-superlink
+  template:
+    metadata:
+      labels:
+        app: fl-superlink
+    spec:
+      hostNetwork: true
+      containers:
+        - name: fl-superlink
+          image: flwr/superlink:1.15.0
+          imagePullPolicy: Always
+          # command: ["/bin/bash", "-c"]
+          args: ["--insecure", "--isolation", "process"]
+          ports:
+            - containerPort: 9091
+            - containerPort: 9092
+            - containerPort: 9093
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 512Mi
+            limits:
+              cpu: 4000m
+              memory: 8Gi
+          volumeMounts:
+            - name: tz-seoul
+              mountPath: /etc/localtime
+      volumes:
+        - name: tz-seoul
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Seoul
+      nodeSelector:
+        node-role.kubernetes.io/master: "true"

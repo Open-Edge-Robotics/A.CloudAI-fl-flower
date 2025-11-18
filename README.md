@@ -1,158 +1,133 @@
-# Federated Learning with Flower and Tensorflow
+# Flower framework with YOLO
 
-Flower Framework, which is Federated Learning to be used as Distributed Collaborative Learing Framework
+플라워 프레임워크와 YOLO V8 모델을 사용하여 간단한 연합학습 구현
 
 ```
-연구개발과제명: 일상생활 공간에서 자율행동체의 복합작업 성공률 향상을 위한 자율행동체 엣지 AI SW 기술 개발
+-연구개발과제명: 일상생활 공간에서 자율행동체의 복합작업 성공률 향상을 위한 자율행동체 엣지 AI SW 기술 개발
+-
+-세부 개발 카테고리
+-● 지속적 지능 고도화를 위한 자율적 흐름제어 학습 프레임워크 기술 분석 및 설계
+-- 기밀성 데이터 활용 지능 고도화를 위한 엣지와 클라우드 분산 협업 학습 프레임워크 기술
+-- 엣지와 클라우드 협력 학습 간 최적 자원 활용 및 지속적 지능 배포를 위한 자율적 학습흐름제어 기술
+-
+-개발 내용 
+-- 엣지와 클라우드 분산 협업을 위한 지속적 지능 배포 프레임워크 
+-- 자율행동체 엣지 기반 클러스터링 솔루션 및 분산 학습 프레임워크 개발
+-```
 
-세부 개발 카테고리
-● 지속적 지능 고도화를 위한 자율적 흐름제어 학습 프레임워크 기술 분석 및 설계
-- 기밀성 데이터 활용 지능 고도화를 위한 엣지와 클라우드 분산 협업 학습 프레임워크 기술
-- 엣지와 클라우드 협력 학습 간 최적 자원 활용 및 지속적 지능 배포를 위한 자율적 학습흐름제어 기술
+## Dev Environment
 
-개발 내용 
-- 엣지와 클라우드 분산 협업을 위한 지속적 지능 배포 프레임워크 
-- 자율행동체 엣지 기반 클러스터링 솔루션 및 분산 학습 프레임워크 개발
-```
+- [Python](https://www.python.org/) 3.10.12
+- [Flower Framework](https://flower.ai/) 1.15.0
+- [YOLO](https://docs.ultralytics.com/) V8
 
-로봇 연합학습 시스템 구현을 위한 [Flower](https://flower.ai/) 프레임워크 활용 프로젝트입니다.
+## Dependency Installation
 
-## Overview
-
-- **[Flower](https://flower.ai/)** 프레임워크를 활용한 로봇 연합학습 시스템 구현
-- 프레임워크를 활용한 서버와 클라이언트 구현
-- 클라이언트는 Tensorflow를 활용한 모델 학습 및 평가 수행
-- 서버는 클라이언트로부터 모델 가중치 업데이트를 수신하고, 모델을 집계하여 전체 모델 가중치 업데이트 수행
-
-## Federated Learning Flow
-
-### 1. 글로벌 모델 초기화
-
-- 서버 시작 전 글로벌 모델 초기화
-- 기존 학습된 모델 checkpoint 로드
-- [Flower Framework](https://flower.ai/docs/framework/tutorial-series-what-is-federated-learning.html) 가이드 참조
-
-![fl-1](./screenshots/fl-initialize-global-model.png){ width=400px}
-
-### 2. 클라이언트에 기본모델 전달
-
-- 서버와 연결된 클라이언트에 학습을 위한 글로벌 모델 전달
-
-![fl-2](./screenshots/fl-send-global-model.png){ width=400px}
-
-### 3. 클라이언트 데이터셋을 사용한 로컬 학습
-
-- 서버로 부터 전달받은 최신 모델을 사용하여 로컬 학습 진행
-
-![fl-3](./screenshots/fl-local-training.png){ width=400px}
-
-### 4. 서버에 클라이언트 모델 데이터 전달
-
-- 클라이언트에서 학습한 모델 데이터를 서버로 전달
-
-![fl-4](./screenshots/fl-send-model-updates.png){ width=400px}
-
-### 5. 모델 업데이트
-
-- 로컬에서 학습된 모델 데이터를 바탕으로 글로벌 모델 업데이트
-
-![fl-5](./screenshots/fl-aggregate-model-updates.png){ width=400px}
-
-### 6. 라운드 반복
-
-- 정해진 계획에 맞춰 2 ~ 5 단계 라운드 진행
-
-## System Requirements
+### 1. Create venv
 
 ```bash
-# python version >= 3.11
+python3 -m venv venv
 
-# virtual env setup
-# https://github.com/pyenv/pyenv?tab=readme-ov-file#installation
-
-# install pyenv
-curl https://pyenv.run | bash
-
-# install dependencies
-sudo apt-get install build-essential zlib1g-dev libffi-dev libssl-dev libbz2-dev libreadline-dev libsqlite3-dev liblzma-dev libncurses-dev tk-dev
-
-# python 3.12.7 install
-pyenv install 3.12.7
-
-# set local python version 3.12.7
-pyenv local 3.12.7
-
-# create virtual environment and activate
-python -m venv venv
-. ./venv/bin/activate
+. venv/bin/activate
 ```
 
-## Installation
+### 2. Install Packages
 
 ```bash
-# install requirements
 pip install -r requirements.txt
 ```
 
-## Usage
+## Run Flower with Deployment Engine
 
-### Server
+플라워 배포 기능을 사용하여 연합학습 진행
+
+### 1. Set Project toml [pyproject.toml](./pyproject.toml)
+
+```toml
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "flwr_yolo"
+version = "0.0.1"
+description = "Federated Learning with PyTorch, YOLO and Flower"
+license = "Apache-2.0"
+requires-python = ">=3.10"
+readme = "README.md"
+dependencies = [
+    "fire>=0.7.1",
+    "flwr[simulation]>=1.15.0",
+    "torch==2.5.1",
+    "torchvision==0.20.1",
+    "ultralytics==8.3.220",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+
+[tool.flwr.app]
+publisher = "lge"
+
+[tool.flwr.app.components]
+serverapp = "flwr_yolo.server:app"
+clientapp = "flwr_yolo.client:app"
+
+[tool.flwr.app.config]
+min-available-clients = 2
+num-server-rounds = 3
+fraction-fit = 0.5
+fraction-evaluate = 1.0
+epochs = 30
+learning-rate = 0.1
+batch-size = 32
+
+[tool.flwr.federations]
+default = "local-simulation"
+
+[tool.flwr.federations.local-deployment]
+address = "127.0.0.1:9093"
+insecure = true
+
+[tool.flwr.federations.former]
+address = "10.231.172.246:9093"
+insecure = true
+
+[tool.flwr.federations.local-simulation]
+options.num-supernodes = 10
+
+[tool.flwr.federations.local-simulation-gpu]
+options.num-supernodes = 10
+options.backend.client-resources.num-cpus = 2
+options.backend.client-resources.num-gpus = 0.2
+```
+
+### 2. Run Flower superlink
 
 ```bash
-python src/flower_study/server.py
+flower-superlink --insecure
 ```
 
-### Client
-
-#### Use Online Dataset
+### 3. Run Flower supernode
 
 ```bash
-# set server ip and port
-export SERVER_IP="10.177.196.xx"
-export SERVER_PORT="30xxx"
+# Clinet 1
+flower-supernode \
+     --insecure \
+     --superlink 127.0.0.1:9092 \
+     --clientappio-api-address 127.0.0.1:9094 \
+     --node-config 'client_id=0'
 
-python src/flower_study/client.py
+# Client 2
+flower-supernode \
+     --insecure \
+     --superlink 127.0.0.1:9092 \
+     --clientappio-api-address 127.0.0.1:9095 \
+     --node-config 'client_id=1'
 ```
 
-#### Use Custom Dataset
-
-- 로컬에 미리 제작해둔 커스텀 데이터셋 필요
+### 4. Run Flower Federation
 
 ```bash
-python src/flower_study/client_custom_dataset.py "1" # 1: Client ID
-```
-
-### Prediction
-
-```bash
-# Use Online Dataset
-python src/flower_study/predict_test.py
-
-# Use Custom Dataset
-# 로컬에 미리 제작해둔 커스텀 데이터셋 필요
-python src/flower_study/predict_test_custom_dataset.py
-```
-
----
-
-## Related Project
-
-```
-https://github.com/Open-Edge-Robotics/A.EdgeAI-fl-perception
-To deploy Perception engine,  which is model resulted from Federated Learning 
-
-https://github.com/Open-Edge-Robotics/A.RobotAI-ros2-streamer
-To make and send stream of ROS 2 images captured from carmera attached to Robot.
-
-https://github.com/Open-Edge-Robotics/A.EdgeAI-rosbag-reader
-Reader function to extract the data (including images) from rosbag of ROS2
-
-https://github.com/Open-Edge-Robotics/A.CloudAI-fl-flower
-Flower Framework, which is Federated Learning to be used as Distributed Collaborative Learing Framework
-
-https://github.com/Open-Edge-Robotics/A.CloudAI-kube-multi-ctl
-Customized kubectl to manage multiple k8s master node (standalone node)
-
-https://github.com/Open-Edge-Robotics/A.RobotAI-kube-crd  (ebme-crd)
-Kubernetes custom resource definition to deploy the specific robot engines and applications
+flwr run . local-deployment --stream
 ```

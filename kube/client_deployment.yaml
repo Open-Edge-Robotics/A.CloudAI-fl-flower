@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fl-client-deployment
+  namespace: lge-ebme
+  labels:
+    app: fl-client
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fl-client
+  template:
+    metadata:
+      labels:
+        app: fl-client
+    spec:
+      hostNetwork: true
+      containers:
+        - name: fl-client
+          image: lgecloudroboticstask/fl:flwr-yolo.2025.04.25
+          imagePullPolicy: Always
+          command: ["flwr-clientapp"]
+          args: ["--insecure", "--clientappio-api-address", "127.0.0.1:9094"]
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 512Mi
+            limits:
+              cpu: 8000m
+              memory: 8Gi
+          volumeMounts:
+            - name: tz-seoul
+              mountPath: /etc/localtime
+      volumes:
+        - name: tz-seoul
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Seoul
+      imagePullSecrets:
+        - name: regcred
+      nodeSelector:
+        node-role.kubernetes.io/master: "true"

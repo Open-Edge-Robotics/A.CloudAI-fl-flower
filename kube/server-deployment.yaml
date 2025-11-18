@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fl-server-deployment
+  namespace: lge-ebme
+  labels:
+    app: fl-server
+  annotations:
+    kubernetes.io/change-cause: "Init deployment"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fl-server
+  template:
+    metadata:
+      labels:
+        app: fl-server
+    spec:
+      hostNetwork: true
+      containers:
+        - name: fl-server
+          image: lgecloudroboticstask/fl:flwr-yolo.2025.03.21
+          imagePullPolicy: Always
+          command: ["flwr-serverapp"]
+          args:
+            ["--insecure", "--serverappio-api-address", "192.168.5.118:9091"]
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 512Mi
+            limits:
+              cpu: 4000m
+              memory: 8Gi
+          volumeMounts:
+            - mountPath: /mnt/checkpoints
+              name: checkpoints
+            - name: tz-seoul
+              mountPath: /etc/localtime
+      volumes:
+        - name: checkpoints
+          persistentVolumeClaim:
+            claimName: fl-checkpoints-pvc
+        - name: tz-seoul
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Seoul
+      imagePullSecrets:
+        - name: regcred
+      nodeSelector:
+        node-role.kubernetes.io/master: "true"

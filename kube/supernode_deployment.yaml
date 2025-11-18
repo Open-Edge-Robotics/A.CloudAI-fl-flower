@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fl-supernode-deployment
+  namespace: lge-ebme
+  labels:
+    app: fl-supernode
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: fl-supernode
+  template:
+    metadata:
+      labels:
+        app: fl-supernode
+    spec:
+      hostNetwork: true
+      containers:
+        - name: fl-supernode
+          image: flwr/supernode:1.15.0
+          imagePullPolicy: Always
+          # command: ["/bin/bash", "-c"]
+          args:
+            [
+              "--insecure",
+              "--superlink",
+              "10.231.172.246:9092",
+              "--clientappio-api-address",
+              "0.0.0.0:9094",
+              "--isolation",
+              "process",
+            ]
+          ports:
+            - containerPort: 9094
+          resources:
+            requests:
+              cpu: 1000m
+              memory: 512Mi
+            limits:
+              cpu: 8000m
+              memory: 8Gi
+          volumeMounts:
+            - name: tz-seoul
+              mountPath: /etc/localtime
+      volumes:
+        - name: tz-seoul
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Seoul
+      imagePullSecrets:
+        - name: regcred
+      nodeSelector:
+        node-role.kubernetes.io/master: "true"

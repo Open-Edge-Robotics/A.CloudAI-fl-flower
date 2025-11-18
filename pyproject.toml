@@ -1,20 +1,56 @@
-[tool.poetry]
-name = "flower-study"
-version = "0.1.0"
-description = ""
-authors = ["seo.youngchae <seo.youngchae@lgepartner.com>"]
-readme = "README.md"
-packages = [{include = "flower_study", from = "src"}]
-
-[tool.poetry.dependencies]
-python = "^3.10"
-tensorflow = "^2.17.0"
-flwr-datasets = "^0.3.0"
-flwr = "^1.10.0"
-tensorflow-datasets = "^4.9.6"
-fire = "^0.6.0"
-
-
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "flwr_yolo"
+version = "0.0.1"
+description = "Federated Learning with PyTorch, YOLO and Flower"
+license = "Apache-2.0"
+requires-python = ">=3.10"
+readme = "README.md"
+dependencies = [
+    "fire>=0.7.1",
+    "flwr[simulation]>=1.15.0",
+    "torch==2.5.1",
+    "torchvision==0.20.1",
+    "ultralytics==8.3.220",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["."]
+
+[tool.flwr.app]
+publisher = "lge"
+
+[tool.flwr.app.components]
+serverapp = "flwr_yolo.server:app"
+clientapp = "flwr_yolo.client:app"
+
+[tool.flwr.app.config]
+min-available-clients = 2
+num-server-rounds = 3
+fraction-fit = 0.5
+fraction-evaluate = 1.0
+epochs = 30
+learning-rate = 0.1
+batch-size = 32
+
+[tool.flwr.federations]
+default = "local-simulation"
+
+[tool.flwr.federations.local-deployment]
+address = "127.0.0.1:9093"
+insecure = true
+
+[tool.flwr.federations.former]
+address = "10.231.172.246:9093"
+insecure = true
+
+[tool.flwr.federations.local-simulation]
+options.num-supernodes = 10
+
+[tool.flwr.federations.local-simulation-gpu]
+options.num-supernodes = 10
+options.backend.client-resources.num-cpus = 2
+options.backend.client-resources.num-gpus = 0.2
